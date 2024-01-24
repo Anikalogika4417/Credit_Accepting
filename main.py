@@ -1,20 +1,17 @@
+import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_validate
 
 credit_data = pd.read_csv('credit_data.csv')
 
 features = credit_data[['income', 'age', 'loan']]
 target = credit_data.default
 
-feature_train, feature_test, target_train, target_test = train_test_split(features, target, test_size=0.3)
+x = np.array(features).reshape(-1, 3)
+y = np.array(target)
 
 model = LogisticRegression()
-model.fit = model.fit(feature_train, target_train)
+predicted = cross_validate(model, x, y, cv=5)
 
-prediction = model.fit.predict(feature_test)
-
-print(confusion_matrix(target_test, prediction))
-print(accuracy_score(target_test, prediction))
+print(np.mean(predicted['test_score']))
